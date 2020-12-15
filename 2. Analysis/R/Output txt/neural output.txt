@@ -1,0 +1,218 @@
+# ------------------------------------------------------------------- #
+# theta power ~ block number + condition + (block number x condition) #
+# ------------------------------------------------------------------- #
+ ------
+| CODE |
+ ------ 
+
+lmer(Theta  ~ (1|Subject_nr) + Block_specific * Condition)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Theta
+                              F Df Df.res  Pr(>F)  
+(Intercept)              0.1752  1   23.0 0.67940  
+Block_specific           2.5827  5 7651.0 0.02428 *
+Condition                1.1179  1 7651.0 0.29040  
+Block_specific:Condition 2.3233  5 7650.8 0.04054 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# ------------------------------------------------------------------- #
+# beta power ~ block number + condition + (block number x condition) #
+# ------------------------------------------------------------------- #
+ ------
+| CODE |
+ ------ 
+
+lmer(Beta  ~ (1|Subject_nr) + Block_specific * Condition)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Beta
+                                F Df Df.res    Pr(>F)    
+(Intercept)              279.9461  1   23.0  2.27e-14 ***
+Block_specific             0.9031  5 7650.7    0.4779    
+Condition                 68.4232  1 7650.7 < 2.2e-16 ***
+Block_specific:Condition   0.7920  5 7650.6    0.5553    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# ------------------------------------------------------------------- #
+# alpha power ~ block number + condition + (block number x condition) #
+# ------------------------------------------------------------------- #
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Alpha ~ (1|Subject_nr) + Block_specific * Condition)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Alpha
+                               F Df Df.res    Pr(>F)    
+(Intercept)              83.7737  1     23 3.952e-09 ***
+Block_specific            1.5657  7  10118   0.14051    
+Condition                69.0610  1  10118 < 2.2e-16 ***
+Block_specific:Condition  1.7350  7  10118   0.09602 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# ------------------------- #
+# theta power ~ repetitions #
+# ------------------------- #
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Theta  ~ (1|Subject_nr) + Repetitions_block)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Theta
+                       F Df Df.res Pr(>F)
+(Intercept)       0.0105  1   23.0 0.9193
+Repetitions_block 1.0323  7 5561.7 0.4059
+
+# ------------------------- #
+# alpha power ~ repetitions #
+# ------------------------- #
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Alpha ~ (1|Subject_nr) + Repetitions_block, data = df.reduced)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald chisquare tests)
+
+Response: Alpha
+                   Chisq Df Pr(>Chisq)    
+(Intercept)       71.543  1  < 2.2e-16 ***
+Repetitions_block 96.188  5  < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+
+# ----------------------------------------------------------------- #
+# alpha power ~ repetitions + condition + (repetitions x condition) #
+# ----------------------------------------------------------------- #
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Alpha  ~ (1|Subject_nr) + Repetitions_block * Condition, 
+              data = df)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Alpha
+                                  F Df Df.res    Pr(>F)    
+(Intercept)                 71.8740  1   23.0 1.563e-08 ***
+Repetitions_block           20.3376  5 7684.2 < 2.2e-16 ***
+Condition                   61.6978  1 7684.4 4.547e-15 ***
+Repetitions_block:Condition  3.4001  5 7684.1  0.004528 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+# ----------------------------------------------------------------- #
+# theta power ~ repetitions + condition + (repetitions x condition) #
+# ----------------------------------------------------------------- #
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Theta  ~ (1|Subject_nr) + Repetitions_block * Condition)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Theta
+                                 F Df Df.res  Pr(>F)  
+(Intercept)                 0.0375  1     23 0.84820  
+Repetitions_block           2.0419  7  10118 0.04631 *
+Condition                   1.1239  1  10119 0.28911  
+Repetitions_block:Condition 0.8897  7  10118 0.51347  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Power  ~ (1|Subject_nr) + Repetitions_block * Condition * Power_dummy, data = df_powersplit)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Power
+                                                F Df  Df.res    Pr(>F)    
+(Intercept)                                0.0009  1    24.2  0.976183    
+Repetitions_block                          1.3526  7 20259.3  0.220852    
+Condition                                  1.2327  1 20259.6  0.266903    
+Power_dummy                             3583.4223  1 20259.0 < 2.2e-16 ***
+Repetitions_block:Condition                0.5925  7 20259.2  0.762637    
+Repetitions_block:Power_dummy             22.3298  7 20259.0 < 2.2e-16 ***
+Condition:Power_dummy                     33.0013  1 20259.0 9.342e-09 ***
+Repetitions_block:Condition:Power_dummy    2.8100  7 20259.0  0.006346 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+ ------
+| CODE |
+ ------ 
+
+lmer(Power  ~ (1|Subject_nr) + Block_specific * Condition * Power_dummy, data = df_powersplit)
+
+ --------
+| OUTPUT |
+ --------
+
+Analysis of Deviance Table (Type III Wald F tests with Kenward-Roger df)
+
+Response: Power
+                                             F Df  Df.res    Pr(>F)    
+(Intercept)                             0.0009  1    24.2  0.976247    
+Block_specific                          5.0984  7 20259.7 8.396e-06 ***
+Condition                               1.0945  1 20259.7  0.295490    
+Power_dummy                          3486.5455  1 20259.0 < 2.2e-16 ***
+Block_specific:Condition                1.0803  7 20259.6  0.372815    
+Block_specific:Power_dummy              2.8762  7 20259.0  0.005304 ** 
+Condition:Power_dummy                  28.9936  1 20259.0 7.343e-08 ***
+Block_specific:Condition:Power_dummy    1.5747  7 20259.0  0.137693    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1

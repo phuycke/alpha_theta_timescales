@@ -1,0 +1,95 @@
+---
+title: "Correlational output paper 1"
+author: "Pieter Huycke"
+date: "20/11/2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=F}
+knitr::opts_chunk$set(echo=F)
+
+# SETUP + PREPARING DATA ---------
+setwd("C:/Users/pieter/OneDrive - UGent/Projects/2019/overtraining - PILOT 3/figures/Publish/Data/Stimulus-locked/Theta, alpha, beta + behavioral data")
+df = read.csv("theta_alpha_beta_behavioural.csv", 
+              header = TRUE, sep = ",")
+```
+
+```{r, label='general-manipulations', echo=F, results='hide',message=F}
+
+# check if data load worked out
+head(df)
+
+# load needed libraries
+library(car)
+library(lme4)
+library(lmerTest)
+
+# VARIABLE MANIPULATION  ---------
+
+# see as certain predictors as factor
+df$Block_overall       = factor(df$Block_overall)
+df$Block_specific      = factor(df$Block_specific)
+df$Repetitions_overall = factor(df$Repetitions_overall)
+df$Repetitions_block   = factor(df$Repetitions_block)
+df$Subject_nr          = factor(df$Subject_nr)
+
+# set the Anova parameters
+options(contrasts = c("contr.sum", "contr.poly"))
+```
+
+## General data manipulation
+
+Before we start with the following analyses, we first load the data, check it visually and perform some general preprocessing steps. This includes converting the data from numeric values to factors when required. This conversion is checked visually. Finally, the anova options are specified. We see an overview of the data immediately below.
+
+```{r, label='show-head', echo=T}
+# check if data load worked out
+head(df)
+```
+
+## Correlation between behavioral- and neural data
+
+In the next step we investigate whether ```log(RT)``` can be predicted using experimental- and non-experimental parameters. The non-experimental parameters include $\theta$-, $\alpha$- and $\beta$ power values recorded during the EEG. The EEG power metrics were calculated by 1) computing the TFR of each trial,  and 2) averaging the power in a specific time window based on the results of the permutation test (250 to 400 ms for the $\theta$ power, 700 tot 850 ms for both the $\alpha$- and the $\beta$ power). Note that the frequency range of interest for $\theta$ was 4 to 8 Hz, for $alpha$ we looked at the range from 8 to 12 Hz, and for $\beta$ we looked at the power between 14 and 30 Hz. The experimental parameters include everything that was manipulated during our experiment. This includes the amount of repetitions within an experimental block (```Repetitions_block```, ranges from 1 to 8), the condition-specific block number (```Block_specific```, ranges from 1 to 8), and the binary value condition (```Condition```, either 'Novel' or 'Recurrring'). We also include the interaction between repetitions and condition, and between block number and condition. This concludes the list of all the fixed effects that were included. We additionally included a random intercept for subject (```Subject_nr```, 24 unique IDs), and random slopes for $\theta$, $\alpha$ en $\beta$ power.
+
+We start from the full model, and use a model selection procedure to determine the best possible model. The procedure we use is the ```step``` function from the library ```lmerTest```. This procedure uses a backwards procedure to determine the best model. When this procedure is concluded, we determine the final model and print the associated p-values. 
+
+```{r, label='model-selection', echo=T}
+# are theta and alpha predictors of RT?
+# caveat: this is the full data
+# -- > correlation exists between repetitions_block and block
+rt.all = lmer(RT_log  ~ (1 + Theta + Alpha + Beta|Subject_nr) + 
+                             Theta + Alpha + Beta +
+                             Repetitions_block +  Repetitions_block:Condition +
+                             Block_specific * Condition, 
+                             data = df)
+ 
+# select the best subset of variables that also leads to decent performance
+rt_all.selected = lmerTest::step(rt.all)
+rt_all.selected
+rt_all.final    = lmerTest::get_model(rt_all.selected)
+anova(rt_all.final)
+summary(rt_all.final)
+```
+
+## Interpreting the results
+
+Immediately below we plot the estimated coefficients of the fixed- and random effects included in this model. We note that the intercept equals the average ```log(RT)``` when the factors are on their reference level (stimulus repetition 8, block 8, condition 0), and with the continuous variables set to 0 (since these variables were not centered prior to analysis. Thus, 2.714 is the value for the average ```log(RT)``` when $\theta$, $\alpha$ and $\beta$ power are zero, when the number of repetitions is equal to 8, when the block number is 8, and when the condition is 'Novel'.
+
+```{r, label='model-selection', echo=T}
+# showing the predictors
+summary(rt_all.final)
+```
+
+We see that
+
+## Collinearity issues in our dataset?
+
+A final step is to print the Variance Inflation Factor (VIF) to assess collinearity in the dataset. We note that a VIF of 1 means that there is no correlation at all. Different definitions of 'problematic VIF values' exist, but we argue that our VIFs would not be considered problematic.
+
+```{r, label='VIF', echo=T}
+all_vifs = car::vif(rt_all.final)
+print(all_vifs)
+```
+

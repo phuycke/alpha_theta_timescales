@@ -1,0 +1,21 @@
+# block nummer == 1 er uit nemen, en dan kijken naar het hoofdeffect van block ID
+# alles in de data houden
+# niet hercodering voor de cruciale interactie
+# predictoren centreren : rep en blocks, block ID als -.5 en .5
+# intercept: gemiddelde van de data
+# alles symmetrisch tov het middelpunt
+# reps is gecorrelereerd met blocks, dus die competen voor verklaarde variantie
+# overall reps moet in interactie met block ID
+# OF: dataset splitsen en het effect van overall reps testen in de aparte datasets
+# Block ID 0: enkel data in het begin
+# Block ID 1: meer punten aan de zijkant, die dicteren de slope veel meer
+
+# interactie block ID en block number
+# apart model -> geen rekening met overall repetitions hier door de correlatie
+# overall repetitions -> ander model
+# data voor block ID is 1, en block ID 0
+# bv voor block nummer: overall reps correleert met block nummer in een bepaald deel van de data
+# analyse voor andere tijdsschalen kan, andere predictoren per analyse
+# block number * block ID voor de interactie
+# effect van overall repetitions : split nodig voor reps < 9
+# behavioral effect in block ID  == 1 correleren met alpha
