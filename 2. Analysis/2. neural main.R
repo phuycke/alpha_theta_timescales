@@ -1,4 +1,9 @@
-#!/usr/bin/Rscript
+##################################################
+## Project: Theta and alpha power across fast and slow timescales in cognitive control
+## Script purpose: main neural analyses (see 'EEG Results' in Results)
+## Date: 2020
+## Author: Pieter Huycke
+##################################################
 
 # SETUP + PREPARING DATA ---------
 setwd("C:/Users/pieter/OneDrive - UGent/Projects/2019/overtraining - PILOT 3/figures/Publish/Data/Stimulus-locked/Theta, alpha, beta + behavioral data")
@@ -31,86 +36,25 @@ class(df$Subject_nr)
 # set the Anova parameters
 options(contrasts = c("contr.sum", "contr.poly"))
 
-# SLOW TIMESCALE ---------
-
-# remove the first and the last blocks to avoid double-dipping
-df.reduced = df[(as.numeric(as.character(df$Block_specific)) > 1), ]
-df.reduced = df.reduced[(as.numeric(as.character(df.reduced$Block_specific)) < 8), ]
-
-# ------------------------------------------------------------------- #
-# theta power ~ block number + condition + (block number x condition) #
-# ------------------------------------------------------------------- #
-theta.block_cond = lmer(Theta  ~ (1|Subject_nr) + Block_specific * Condition, 
-                        data = df.reduced)
-
-summary(theta.block_cond)
-aov1 = Anova(theta.block_cond,
-             type           = "III",
-             test.statistic = "F")
-aov1
-
-# FAST TIMESCALE ---------
-
-# remove repetitions larger than 9
-df.reduced = df[(as.numeric(as.character(df$Repetitions_overall)) <= 8), ]
-
-# make a subset for when repetitions <= 8
-df.reduced = df[(as.numeric(as.character(df$Repetitions_block)) > 1), ]
-df.reduced = df.reduced[(as.numeric(as.character(df.reduced$Repetitions_block)) < 8), ]
-
-# ------------------------- #
-# alpha power ~ repetitions #
-# ------------------------- #
-alpha.reps = lmer(Alpha ~ (1|Subject_nr) + Repetitions_block, 
-                  data = df.reduced)
-summary(alpha.reps)
-aov2 = Anova(alpha.reps,
-             type           = "III",
-             test.statistic = "F")
-aov2
-
-# ------------------------ #
-# beta power ~ repetitions #
-# ------------------------ #
-beta.reps = lmer(Beta ~ (1|Subject_nr) + Repetitions_block, 
-                data = df.reduced)
-summary(beta.reps)
-aov3 = Anova(beta.reps,
-             type           = "III",
-             test.statistic = "F")
-aov3
-
-# ADDITIONAL CHECKS ---------
-
-# ------------------------- #
-# theta power ~ repetitions #
-# ------------------------- #
-
-# remove repetitions larger than 9
-df.reduced = df[(as.numeric(as.character(df$Repetitions_overall)) < 9), ]
-
-theta.reps = lmer(Theta ~ (1|Subject_nr) + Repetitions_block, 
-                  data = df.reduced)
-summary(theta.reps)
-aov4 = Anova(theta.reps,
-             type           = "III",
-             test.statistic = "F")
-aov4
+# FIGURE 3C ---------
 
 # ----------------------------------------------------------------- #
 # alpha power ~ repetitions + condition + (repetitions x condition) #
 # ----------------------------------------------------------------- #
-# make a subset for when repetitions <= 8
+
+# remove stimulus numbers 1 and 8 to avoid double-dipping
 df.reduced = df[(as.numeric(as.character(df$Repetitions_block)) > 1), ]
 df.reduced = df.reduced[(as.numeric(as.character(df.reduced$Repetitions_block)) < 8), ]
 
 alpha.reps_cond = lmer(Alpha  ~ (1|Subject_nr) + Repetitions_block * Condition, 
                        data = df.reduced)
 summary(alpha.reps_cond)
-aov5 = Anova(alpha.reps_cond,
-             type           = "III",
-             test.statistic = "F")
-aov5
+fig.3c = Anova(alpha.reps_cond,
+               type           = "III",
+               test.statistic = "F")
+fig.3c
+
+# FIGURE 3D ---------
 
 # ------------------------------------------------------------------- #
 # alpha power ~ block number + condition + (block number x condition) #
@@ -118,10 +62,12 @@ aov5
 alpha.block_cond = lmer(Alpha  ~ (1|Subject_nr) + Block_specific * Condition, 
                         data = df)
 summary(alpha.block_cond)
-aov6 = Anova(alpha.block_cond,
-             type           = "III",
-             test.statistic = "F")
-aov6
+fig.3d = Anova(alpha.block_cond,
+               type           = "III",
+               test.statistic = "F")
+fig.3d
+
+# FIGURE 4C ---------
 
 # ----------------------------------------------------------------- #
 # theta power ~ repetitions + condition + (repetitions x condition) #
@@ -129,60 +75,26 @@ aov6
 theta.reps_cond = lmer(Theta  ~ (1|Subject_nr) + Repetitions_block * Condition, 
                        data = df)
 summary(theta.reps_cond)
-aov8 = Anova(theta.reps_cond,
-             type           = "III",
-             test.statistic = "F")
-aov8
+fig.4c = Anova(theta.reps_cond,
+               type           = "III",
+               test.statistic = "F")
+fig.4c
+
+# FIGURE 4D ---------
 
 # ------------------------------------------------------------------- #
-# beta power ~ block number + condition + (block number x condition) #
+# theta power ~ block number + condition + (block number x condition) #
 # ------------------------------------------------------------------- #
-beta.block_cond = lmer(Beta  ~ (1|Subject_nr) + Block_specific * Condition, 
-                       data = df)
-summary(beta.block_cond)
-aov7 = Anova(beta.block_cond,
-             type           = "III",
-             test.statistic = "F")
-aov7
 
+# remove block numbers 1 and 8 to avoid double-dipping
+df.reduced = df[(as.numeric(as.character(df$Block_specific)) > 1), ]
+df.reduced = df.reduced[(as.numeric(as.character(df.reduced$Block_specific)) < 8), ]
 
-# ------------ #
-# New analysis #
-# ------------ #
+theta.block_cond = lmer(Theta  ~ (1|Subject_nr) + Block_specific * Condition, 
+                        data = df.reduced)
 
-library(dplyr)
-
-# keep only the theta power metric, rename Theta to Power, and add dummy that codes for power
-theta = select(df, Subject_nr, Theta, Condition, Block_specific, Repetitions_block)
-names(theta)[names(theta)=="Theta"] = "Power"
-theta$Power_dummy = 0
-
-# keep only the alpha power metric, rename Alpha to Power, and add dummy that codes for power
-alpha = select(df, Subject_nr, Alpha, Condition, Block_specific, Repetitions_block)
-alpha$Power_dummy = 1
-names(alpha)[names(alpha)=="Alpha"] = "Power"
-
-# bind the two dataframes together
-df_powersplit = rbind(theta, alpha)
-head(df_powersplit)
-
-# analysis for the fast timescale
-analysis.1 = lmer(Power  ~ (1|Subject_nr) + Repetitions_block * Condition * Power_dummy, 
-                  data = df_powersplit)
-summary(analysis.1)
-aov9 = Anova(analysis.1,
-             type           = "III",
-             test.statistic = "F")
-aov9
-
-# analysis for the slow timescale
-analysis.2 = lmer(Power  ~ (1|Subject_nr) + Block_specific * Condition * Power_dummy, 
-                  data = df_powersplit)
-summary(analysis.2)
-aov10 = Anova(analysis.2,
-             type           = "III",
-             test.statistic = "F")
-aov10
-
-
-
+summary(theta.block_cond)
+fig.4d = Anova(theta.block_cond,
+               type           = "III",
+               test.statistic = "F")
+fig.4d

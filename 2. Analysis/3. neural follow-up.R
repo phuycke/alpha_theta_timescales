@@ -33,9 +33,7 @@ class(df$Subject_nr)
 # set the Anova parameters
 options(contrasts = c("contr.sum", "contr.poly"))
 
-# ------------ #
-# New analysis #
-# ------------ #
+# Alpha-theta dissociation ---------
 
 library(dplyr)
 
@@ -53,20 +51,24 @@ names(alpha)[names(alpha)=="Alpha"] = "Power"
 df_powersplit = rbind(theta, alpha)
 head(df_powersplit)
 
-# analysis for the fast timescale
+# -------------- #
+# Fast timescale #
+# -------------- #
 analysis.1 = lmer(Power  ~ (1|Subject_nr) + Repetitions_block * Condition * Power_dummy, 
                   data = df_powersplit)
 summary(analysis.1)
-aov9 = Anova(analysis.1,
-             type           = "III",
-             test.statistic = "F")
-aov9
+dissociation.fast = Anova(analysis.1,
+                          type           = "III",
+                          test.statistic = "F")
+dissociation.fast
 
-# analysis for the slow timescale
+# -------------- #
+# Slow timescale #
+# -------------- #
 analysis.2 = lmer(Power  ~ (1|Subject_nr) + Block_specific * Condition * Power_dummy, 
                   data = df_powersplit)
 summary(analysis.2)
-aov10 = Anova(analysis.2,
-              type           = "III",
-              test.statistic = "F")
-aov10
+dissociation.slow = Anova(analysis.2,
+                          type           = "III",
+                          test.statistic = "F")
+dissociation.slow

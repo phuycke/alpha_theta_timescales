@@ -1,4 +1,9 @@
-#!/usr/bin/Rscript
+##################################################
+## Project: Theta and alpha power across fast and slow timescales in cognitive control
+## Script purpose: follow-up neural analyses (see 'Correlation between neural and behavioral metrics')
+## Date: 2020
+## Author: Pieter Huycke
+##################################################
 
 # SETUP + PREPARING DATA ---------
 setwd("C:/Users/pieter/OneDrive - UGent/Projects/2019/overtraining - PILOT 3/figures/Publish/Data/Stimulus-locked/Theta, alpha, beta + behavioral data")
@@ -13,7 +18,7 @@ library(car)
 library(lme4)
 library(lmerTest)
 
-# VARIABLE MANIPULATION  ---------
+# VARIABLE MANIPULATION ---------
 
 # see as certain predictors as factor
 df$Block_overall       = factor(df$Block_overall)
@@ -32,7 +37,8 @@ class(df$Subject_nr)
 # set the Anova parameters
 options(contrasts = c("contr.sum", "contr.poly"))
 
-# are theta and alpha predictors of RT?
+# Are alpha and theta predictors of RT? ---------
+
 # caveat: this is the full data
 # -- > correlation exists between repetitions_block and block
 rt.all = lmer(RT_log  ~ (1 + Theta + Alpha|Subject_nr) + Theta + Alpha +
@@ -46,6 +52,7 @@ rt_all.final    = lmerTest::get_model(rt_all.selected)
 anova(rt_all.final)
 summary(rt_all.final)
 
-# show whether correlations exist between the variables
+# show whether correlations exist between the variables using Variance Inflation Factor
+# all lower than 2, so not too much correlation
 all_vifs = car::vif(rt_all.final)
 print(all_vifs)
