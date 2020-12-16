@@ -119,6 +119,10 @@ plt.close()
 
 #%%
 
+"""
+Compute the t-test
+"""
+
 import scipy.stats as stats
 
 m1, sd1 = np.round(np.mean(arr[:,0]), 1), np.round(np.std(arr[:,0]), 1)
