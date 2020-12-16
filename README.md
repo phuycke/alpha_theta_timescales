@@ -10,12 +10,32 @@ This GitHub repository contains the code used for the analysis and plotting done
 
 ## Organization
 
-To be defined.
+The scripts are organized following the order defined in [the paper](https://doi.org/10.1101/2020.08.21.259341).
+
+- 0. Software environment
+    * A list of all the softwares used in the Anaconda environment, and their version at the moment of submission
+- 1. Experiment
+    * Code
+        - The experiment code itself. Note that ```main (only sub-01).py``` is a version that was used for the first subject. This version was too long, and hence we used a shorter version for the other 29 subjects ```main.py```.
+    * Stimuli
+        - The stimuli used in this experiment. Provided to us by [Hannes Ruge](https://doi.org/10.1093/cercor/bhp228). 
+- 2. Data preparation
+    * Behavioral
+        - Behavioral data rejection (```clean.py```)
+        - Definition of our descriptive statistics (```descriptives.py```)
+    * EEG
+        - Custom code written to preprocess our EEG data (```eeg_helper.py```)
+        - The preprocessing script, described in 'Data Recording and Initial Processing' (```initial_processing.py```)
+        - List of subject-specific rejected channels and rejected ICA components (```set_cleaning_parameters.py```)
+- 3. Analysis
+    * Ordered list of the analyses associated with the results described in the paper. The scripts are ordered so that their order corresponds with the order of the results described in the manuscript. Comments refer to the specific analysis done
+- 4. Plots
+    * Folders describe the specific figure, file names describe what specific part of the plot is created
 
 ## Programming environment   
 
 Packages used, and their versions, are listed below.    
-Note that we only listed the most important packages, a complete list of the Anaconda virtual environment can be found in [requirements.txt.](https://github.com/phuycke/alpha_theta_timescales/blob/main/0.%20Software%20environment/requirements.txt)
+Note that we only listed the most important packages, a complete list of the Anaconda virtual environment can be found in [conda-env.txt.]()
 
 - conda (v. 4.9.1)
 - python (v. 3.8.5
