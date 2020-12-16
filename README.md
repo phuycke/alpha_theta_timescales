@@ -16,19 +16,19 @@ The scripts are organized following the order defined in [the paper](https://doi
     * A list of all the softwares used in the Anaconda environment, and their version at the moment of submission
 - Experiment
     * Code
-        - The experiment code itself. Note that ```main (only sub-01).py``` is a version that was used for the first subject. This version was too long, and hence we used a shorter version for the other 29 subjects ```main.py```.
+        - The experiment code itself. Note that ```main (only sub-01).py``` is a version that was used for the first subject. This version was too long, and hence we used a shorter version for the other 29 subjects (```main.py```).
     * Stimuli
-        - The stimuli used in this experiment. Provided to us by [Hannes Ruge](https://doi.org/10.1093/cercor/bhp228). 
+        - The stimuli used in this experiment. Same stimuli as used in [Ruge and Wolfensteller (2010)](https://doi.org/10.1093/cercor/bhp228). 
 - Data preparation
     * Behavioral
         - Behavioral data rejection (```clean.py```)
         - Definition of our descriptive statistics (```descriptives.py```)
     * EEG
         - Custom code written to preprocess our EEG data (```eeg_helper.py```)
-        - The preprocessing script, described in 'Data Recording and Initial Processing' (```initial_processing.py```)
+        - The preprocessing pipeline as described in 'Data Recording and Initial Processing' (```initial_processing.py```)
         - List of subject-specific rejected channels and rejected ICA components (```set_cleaning_parameters.py```)
 - Analysis
-    * Ordered list of the analyses associated with the results described in the paper. The scripts are ordered so that their order corresponds with the order of the results described in the manuscript. Comments refer to the specific analysis done
+    * Ordered list of the analyses associated with the results described in the paper. The scripts are ordered so that their order corresponds with the order of the results described in the manuscript. In-script comments refer to the specific analysis done
 - Plots
     * Folders describe the specific figure, file names describe what specific part of the plot is created
 
