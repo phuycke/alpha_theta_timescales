@@ -28,18 +28,9 @@ Variables that will be used throughout the script. Marked by all capitals in
 line with convention in the C language.
 """
 
-# Determines which part of the analysis to run
-STIM_LOCKED = True
-FAST        = True
-
-if FAST:
-    BAND          = [(8, 12, "Alpha")]
-    TMIN, TMAX    = .65, .9  
-    TFR           = "stim-locked repetition 8 - repetition 1 (non phase)-tfr.h5"
-else:
-    BAND          = [(4, 8, "Theta")]
-    TMIN, TMAX    = .25, .4
-    TFR           = "stim-locked block 8 - block 1 (non phase)-tfr.h5"
+BAND          = [(4, 8, "Theta")]
+TMIN, TMAX    = 0, .4
+TFR           = "stim-locked block 8 - block 1 (non phase)-tfr.h5"
 
 # the root folder, but split up for readability
 ROOT = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3"
@@ -66,9 +57,7 @@ avg_tfr = mne.time_frequency.read_tfrs(os.path.join(DATA, TFR))[0]
 # get the frequency bands
 FMIN, FMAX, FNAME = BAND[0]
 
-# plot the data
-if not FAST:
-    TMIN = 0
+# make topoplot
 avg_tfr.plot_topomap(tmin     = TMIN,
                      tmax     = TMAX,
                      fmin     = FMIN,
