@@ -19,7 +19,6 @@ Note that we only listed the most important packages, a complete list of the Ana
 
 - conda (v. 4.9.1)
 - python (v. 3.8.5
-- spyder (v. 3.8.5)
     * matplotlib (v. 3.3.2)
     * mne-python (v. 0.21.0)
     * numpy (v. 1.19.2)
