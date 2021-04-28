@@ -11,6 +11,7 @@ GitHub:  phuycke
 #%%
 
 import matplotlib.pyplot as plt
+import mne
 import numpy             as np
 import os
 
@@ -97,6 +98,42 @@ Data loading, averaging and filtering
 f_obs = np.load(os.path.join(PERM_DATA, "f_obs.npy"))
 assert f_obs.shape == (64, 15, 1024)
 
+#%%
+
+"""
+Only take into account the electrodes where you have at least one significant
+datapoint in the timewindow of interest
+"""
+       
+# load in data of one subject to access channel information
+ROOT  = r'C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\sub-02\ses-01\eeg\Python'
+TF    = os.path.join(ROOT, 'time-frequency')
+ep    = mne.read_epochs(os.path.join(TF, 'sub-02_stimulus_tf_epo.fif'))   
+
+# load the cluster data, and keep only the significant clusters
+clust       = np.load(os.path.join(PERM_DATA, "clust.npy"), allow_pickle = True)
+clust_p_val = np.load(os.path.join(PERM_DATA, "clust_p_val.npy"))
+f_obs_plot  = np.zeros_like(f_obs)
+for c, p_val in zip(clust, clust_p_val):
+    if p_val <= 0.05:
+        f_obs_plot[tuple(c)] = f_obs[tuple(c)]
+
+# read channels, select time window of interest and create all True mask
+# note that the results are the same for frequencies 8 - 14 Hz and 8 - 30 Hz
+channels = ep.info["ch_names"][:64]
+twoi     = f_obs_plot[:,5:10,717:870]
+excl     = np.full(64, True)
+
+# for each electrode, check whether at least 1 datapoint belongs to sign. cluster
+for i in range(len(twoi)):
+   if np.all(twoi[i,:,:] == 0):
+       print("Removed: {0:s}".format(channels[i]))
+       excl[i] = False
+       
+# keep only electrodes for which we have significant cluster points
+print("{0:.2f}% of the electrodes ignored".format(100-(sum(excl)/len(excl)*100)))
+f_obs = f_obs[excl,:,:]
+        
 # 64: electrodes, 15: frequencies, 1024: time points
 # we average over electrodes to retain the frequency and time information
 f_obs_mean = np.mean(f_obs, axis = 0)
@@ -163,7 +200,7 @@ ax.set_xticklabels([str(int(label)) for label in np.arange(0, 1001, 250)])
 # set the general title, and the titles of the x-axis and the y-axis
 plt.xlabel('Time after stimulus (ms)')
 plt.ylabel('Frequency (Hz)')
-plt.title(r"Permutation test TFR: $\alpha$ on the fast timescale (p = 0.001)")
+plt.title("Stimulus 1 vs. 8: permutation test TFR\nOnly significant electrodes")
 
 #%%
 
@@ -180,7 +217,7 @@ for c, p_val in zip(clust, clust_p_val):
         f_obs_plot[tuple(c)] = f_obs[tuple(c)]
         
 # take the average (excluding NaNs) of the significant data
-f_obs_plot_mean = np.nanmean(f_obs_plot, axis = 0)
+f_obs_plot_mean = np.nanmean(f_obs_plot[excl,:,:], axis = 0)
 
 # create a 2D raster of the significant data (no plot) to use for the colorbar
 im = ax.imshow(f_obs_plot_mean,

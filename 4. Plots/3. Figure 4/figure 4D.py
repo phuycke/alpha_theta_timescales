@@ -45,7 +45,7 @@ seaborn plotting code
 """
 
 # read the data
-df = pd.read_csv(os.path.join(ROOT, "theta_alpha_beta_behavioural.csv"))
+df = pd.read_csv(os.path.join(ROOT, "theta_alpha_beta_1elec_behavioural.csv"))
 
 # change the column names to their appropriate label
 df.columns = ['Reaction time (ms)', 'RT_log', 'Accuracy', 'Accuracy_int', 
@@ -99,8 +99,8 @@ g = sns.regplot(x           = x_title,
 
 # figure parameters (left figure)
 ax_list[0].set_title(r"Novel condition")   
-ax_list[0].set_ylim([-.1, .1])  
-ax_list[0].set_yticks(np.arange(-.1, .11, .1))   
+ax_list[0].set_ylim([-.15, .15])  
+ax_list[0].set_yticks(np.arange(-.15, .16, .05))   
 ax_list[0].set_xticks(np.arange(1, 9))
 ax_list[0].set_xlim(0.5, 8.5)
 ax_list[0].set_xlabel(r"Block number")
@@ -112,4 +112,4 @@ ax_list[1].set_xlabel(r"Block number")
 ax_list[1].set_ylabel(r"$\theta$ power")
 
 # general title
-f.suptitle(r"$\theta$ power ~ slow timescale", fontsize = 35) 
+f.suptitle(r"$\theta$ power ~ slow timescale (only Fz)", fontsize = 35) 

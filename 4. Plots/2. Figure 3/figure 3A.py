@@ -28,8 +28,8 @@ rcParams['ytick.labelsize'] = 30
 
 #%%
 
-# set the path to the data, and load a fitting Epoch object
-PERM_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Data\Stimulus-locked\Block 1 vs. block 8 (2)"
+# path to the result of the permutation data
+PERM_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Data\Stimulus-locked\Repetition 1 vs. repetition 8"
 TIME_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\TF\Group level\data"
 
 # define frequency bands (log spaced for setting the y-ticks later on)
@@ -48,18 +48,18 @@ fig, ax = plt.subplots(1,1)
 Compute bounds between time samples and construct a time-yvalue bounds grid
 """
 
-# load the time data, and select everything between 0 and 750 ms
+# load the time data, and select everything between 0 and 1s
 times     = np.load(os.path.join(TIME_DATA, "stimulus_times.npy"))
-times     = times[np.where((times > 0) & (times <= .75))]
+times     = times[np.where((times > 0) & (times <= 1))]
 
 # the the difference between x[0] and x[1] for each value in times, and divide 
-# by 2 if len(times) is larger than 750 ms, else fix this at 0.0005
+# by 2 if len(times) is larger than 1s, else fix this at 0.0005
 time_diff = np.diff(times) / 2. if len(times) > 1 else [0.0005]
 
 # compute the limits of the time window (x-axis)
     # start:  first value of time (a bit larger than 0) - 0.00048828
     # middle: all values except the last + 0.00048828
-    # final:  last value of time (.75) + 0.00048828
+    # final:  last value of time (1) + 0.00048828
 time_lims = np.concatenate([[times[0] - time_diff[0]], times[:-1] +
                             time_diff, [times[-1] + time_diff[-1]]])
 
@@ -89,17 +89,15 @@ time_mesh, yval_mesh = np.meshgrid(time_lims, yval_lims)
 
 #%%
 
-#%%
-
 """
 Data loading, averaging and filtering
 """
 
 # load the permutation test result array + check dimensions of the data
 f_obs = np.load(os.path.join(PERM_DATA, "f_obs.npy"))
-assert f_obs.shape == (64, 15, 768)
+assert f_obs.shape == (64, 15, 1024)
 
-# 64: electrodes, 15: frequencies, 768: time points
+# 64: electrodes, 15: frequencies, 1024: time points
 # we average over electrodes to retain the frequency and time information
 f_obs_mean = np.mean(f_obs, axis = 0)
 
@@ -134,8 +132,6 @@ ax.contour(time_mesh,
 
 #%%
 
-#%%
-
 """
 General plotting parameters: y-axis, x_axis, and titles
 """
@@ -160,15 +156,14 @@ for t in tick_vals:
         ticks_str.append(" ")
 ax.set_yticklabels(ticks_str)
 
-
-# set the x-axis parameters: every 50 ms a label is placed
-ax.set_xticks(np.arange(0, .751, .25))
-ax.set_xticklabels([str(int(label)) for label in np.arange(0, 751, 250)])
+# set the x-axis parameters: every 100 ms a label is placed
+ax.set_xticks(np.arange(0, 1.1, .25))
+ax.set_xticklabels([str(int(label)) for label in np.arange(0, 1001, 250)])
 
 # set the general title, and the titles of the x-axis and the y-axis
 plt.xlabel('Time after stimulus (ms)')
 plt.ylabel('Frequency (Hz)')
-plt.title(r"Permutation test TFR: $\theta$ on the slow timescale (p = 0.04)")
+plt.title("Stimulus 1 vs. 8: permutation test TFR\nAlpha on the fast timescale (p = 0.001)")
 
 #%%
 
@@ -205,10 +200,10 @@ cbar = fig.colorbar(im, ax = ax)
 # set some colorbar parameters, such as the title, ticks and tick labels
 cbar.ax.set_title("F-statistic", 
                   fontdict = {"fontsize": 25})
-cbar.ax.get_yaxis().set_ticks(np.arange(0, np.round(np.max(f_obs_plot_mean), 1) + 0.05, 2))
+cbar.ax.get_yaxis().set_ticks(np.arange(0, np.round(np.max(f_obs_plot_mean), 1) + 0.05, 4))
 cbar.ax.tick_params(labelsize = 25)
 
 #%%
 
 # big fix: make sure that the 0 is shown on the x-axis of the final plot 
-ax.set_xbound(0, .75)
+ax.set_xbound(0, 1)

@@ -63,7 +63,7 @@ in long format. That is the reason we did the array reshaping in the previous
 step.
 """
 
-x_title, y_title = "Repetition count", "Alpha power"
+x_title, y_title = "Repetition count", "Beta power"
 
 #%%
     
@@ -104,12 +104,12 @@ ax_list[0].set_yticks(np.arange(-.5, -.09, .1))
 ax_list[0].set_xticks(np.arange(1, 9))
 ax_list[0].set_xlim(0.5, 8.5)
 ax_list[0].set_xlabel(r"Stimulus number")
-ax_list[0].set_ylabel(r"$\alpha$ power")
+ax_list[0].set_ylabel(r"$\beta$ power")
 
 # figure parameters (right figure)
 ax_list[1].set_title(r"Repeating condition")   
 ax_list[1].set_xlabel(r"Stimulus number")
-ax_list[1].set_ylabel(r"$\alpha$ power")
+ax_list[1].set_ylabel(r"$\beta$ power")
 
 # general title
-f.suptitle(r"$\alpha$ power ~ fast timescale", fontsize = 35) 
+f.suptitle(r"$\beta$ power ~ fast timescale", fontsize = 35) 
