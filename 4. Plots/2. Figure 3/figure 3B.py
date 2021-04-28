@@ -10,15 +10,12 @@ GitHub:  phuycke
 
 #%%
 
+import matplotlib.pyplot as plt 
 import mne
+import numpy    as np
 import os
 
 from matplotlib import rcParams
-
-#%%
-
-rcParams['font.family'] = 'Times New Roman'
-rcParams['font.size']   = 30
 
 #%%
 
@@ -28,47 +25,145 @@ Variables that will be used throughout the script. Marked by all capitals in
 line with convention in the C language.
 """
 
-# Determines which part of the analysis to run
-BAND          = [(8, 12, "Alpha")]
-TMIN, TMAX    = .65, .9  
-TFR           = "stim-locked repetition 8 - repetition 1 (non phase)-tfr.h5"
+# Determines which part of the analysis to run + some plotting parameters
+STIM_LOCKED = True
+COMPUTE_TFR = False
+BAND        = [(8, 12, "Alpha")]
+TMIN, TMAX  = .65, .9  
+VMIN, VMAX  = 0.5, 4.5
 
-# the root folder, but split up for readability
-ROOT = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3"
-DATA = os.path.join(ROOT, "figures", "TF", "Group level", "data")
+rcParams['font.family'] = 'Times New Roman'
+rcParams['font.size']   = 30
 
-#%%
-
-"""
-Helper functions
-"""
-
-# colorbar in scientific notation
-def fmt(x, pos):
-    a, b = '{:.2e}'.format(x).split('e')
-    b = int(b)
-    return r'${} \times 10^{{{}}}$'.format(a, b)
+# these are the subjects that had all 512 epochs recorded and stored safely
+full_epochs = ["sub-02", "sub-03", "sub-04", "sub-05", "sub-06", "sub-08",
+               "sub-10", "sub-12", "sub-13", "sub-15", "sub-16", "sub-17",
+               "sub-18", "sub-19", "sub-20", "sub-21", "sub-22", "sub-23",
+               "sub-25", "sub-26", "sub-27", "sub-28", "sub-29", "sub-30"]
 
 #%%
 
-# load average TFR data
-DATA    = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Plots\Permutation results\Contrasts\Data"
-avg_tfr = mne.time_frequency.read_tfrs(os.path.join(DATA, TFR))[0]
+# bool is set to True, you can calculate the difference yourself using this code
+if COMPUTE_TFR:
+    # the root folder, but split up for readability
+    path  = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3"   
+    
+    # holder for all epochs
+    epochs_list = []
+    
+    # get a list of all possible subject numbers, and loop over them
+    for SUB_ID in full_epochs:     
+    
+        # path depends on the subject ID, hence no global def
+        ROOT  = path + r"\{}\ses-01\eeg\Python".format(SUB_ID)
+        TF    = os.path.join(ROOT, "time-frequency")
+            
+        # read the relevant epoch data and store in epochs_list
+        if STIM_LOCKED:
+            epoch = mne.read_epochs(os.path.join(TF, "{}_stimulus_tf_epo.fif".format(SUB_ID)))
+        else:
+            epoch = mne.read_epochs(os.path.join(TF, "{}_response_tf_epo.fif".format(SUB_ID)))
+        epochs_list.append(epoch)
+    
+    # glue all epochs together into one big Epochs object
+    print("Concatenate all Epoch objects")
+    epoch_all = mne.concatenate_epochs(epochs_list)
+    
+    # define frequencies of interest
+    frequencies = np.logspace(np.log10(4), 
+                              np.log10(30), 
+                              15)      
+   
+    # replace the spaces in the metadata titles with _
+    metadata = epoch_all.metadata
+    for name in metadata.columns:
+        metadata = metadata.rename(columns = {name: name.replace(" ","_")})
+    epoch_all.metadata = metadata
+    
+    # stim/resp locked epochs: fast timescale first timepoint
+    rep_1 = mne.time_frequency.tfr_morlet(epoch_all["Overall_repetitions == 1"], 
+                                          picks      = "eeg",
+                                          freqs      = frequencies,
+                                          n_cycles   = frequencies / 2,   # 6
+                                          return_itc = False, 
+                                          verbose    = True,
+                                          n_jobs     = 4)
+    
+    # stim/resp locked epochs: fast timescale last timepoint
+    rep_8 = mne.time_frequency.tfr_morlet(epoch_all["Overall_repetitions == 8"], 
+                                          picks      = "eeg",
+                                          freqs      = frequencies,
+                                          n_cycles   = frequencies / 2,   # 6
+                                          return_itc = False, 
+                                          verbose    = True,
+                                          n_jobs     = 4)
+    
+    # save the data
+    rep_1.save(fname = r"C:\Users\pieter\Downloads\repetition 1 (24 subs)-tfr.h5")
+    rep_8.save(fname = r"C:\Users\pieter\Downloads\repetition 8 (24 subs)-tfr.h5")
+
+#%%
+
+# load the TFR data
+rep1 = mne.time_frequency.read_tfrs(r"C:\Users\pieter\Downloads\repetition 1 (24 subs)-tfr.h5")[0]
+rep8 = mne.time_frequency.read_tfrs(r"C:\Users\pieter\Downloads\repetition 8 (24 subs)-tfr.h5")[0]
+    
+# save rep8 in temp, dB transform
+temp = rep8
+temp._data = 10 * np.log10(rep8._data)
+
+# save rep1 in temp2, dB transform
+temp2 = rep1
+temp2._data = 10 * np.log10(rep1._data)
+
+temp._data -= temp2._data
+    
+# check whether the difference does not equal rep_1 or rep_8
+assert np.all(temp._data != rep1._data)
+assert not np.sum(temp._data != rep8._data)
+    
+#%%
+
+# colorbar with log scaled labels
+def fmt_float(x, pos):
+    return r'${0:.2f}$'.format(x)
+
+#%%
+
+# define the data
+avg_tfr = temp
 
 # get the frequency bands
 FMIN, FMAX, FNAME = BAND[0]
 
-# plot the data
+# create an axis to plot the figure on
+fig, ax = plt.subplots()
+
+# make topoplot
 avg_tfr.plot_topomap(tmin     = TMIN,
                      tmax     = TMAX,
                      fmin     = FMIN,
                      fmax     = FMAX,
+                     vmin     = VMIN, 
+                     vmax     = VMAX,
                      ch_type  = "eeg", 
-                     cmap     = "RdBu_r", 
-                     res      = 250,
-                     outlines = "skirt", 
+                     cmap     = "RdBu_r",
+                     outlines = "head", 
                      contours = 10,
                      colorbar = True,
-                     cbar_fmt = fmt,
+                     cbar_fmt = fmt_float,
                      sensors  = "ko",
+                     axes     = ax,
                      title    = None)
+
+#%%
+
+# define the Figure dir + set the size of the image
+FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
+fig.set_size_inches(6, 4)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure 3B.tiff"), dpi = 300)
+plt.savefig(fname = os.path.join(FIG, "Figure 3B.tiff"), dpi = 300)
+
+plt.close("all")
