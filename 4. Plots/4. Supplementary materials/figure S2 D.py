@@ -11,6 +11,7 @@ GitHub:  phuycke
 #%%
 
 import matplotlib.pyplot as plt
+import mne
 import numpy             as np
 import os
 
@@ -21,15 +22,15 @@ from matplotlib import rcParams
 #%%
 
 rcParams['font.family']     = 'Times New Roman'
-rcParams['axes.titlesize']  = 35
-rcParams['axes.labelsize']  = 30
-rcParams['xtick.labelsize'] = 30
-rcParams['ytick.labelsize'] = 30
+rcParams['axes.titlesize']  = 12
+rcParams['axes.labelsize']  = 12
+rcParams['xtick.labelsize'] = 12
+rcParams['ytick.labelsize'] = 12
 
 #%%
 
 # set the path to the data, and load a fitting Epoch object
-PERM_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Data\Response-locked\Repetition 1 vs. repetition 8"
+PERM_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Data\Stimulus-locked\Block 1 vs. block 8 (2)"
 TIME_DATA = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\TF\Group level\data"
 
 # define frequency bands (log spaced for setting the y-ticks later on)
@@ -50,7 +51,7 @@ Compute bounds between time samples and construct a time-yvalue bounds grid
 
 # load the time data, and select everything between 0 and 750 ms
 times     = np.load(os.path.join(TIME_DATA, "stimulus_times.npy"))
-times     = times[np.where((times > -.235) & (times <= .305))]
+times     = times[np.where((times > 0) & (times <= .75))]
 
 # the the difference between x[0] and x[1] for each value in times, and divide 
 # by 2 if len(times) is larger than 750 ms, else fix this at 0.0005
@@ -95,8 +96,43 @@ Data loading, averaging and filtering
 
 # load the permutation test result array + check dimensions of the data
 f_obs = np.load(os.path.join(PERM_DATA, "f_obs.npy"))
-assert f_obs.shape == (64, 15, 553)
+assert f_obs.shape == (64, 15, 768)
 
+#%%
+
+"""
+Only take into account the electrodes where you have at least one significant
+datapoint in the timewindow of interest
+"""
+       
+# load in data of one subject to access channel information
+ROOT  = r'C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\sub-02\ses-01\eeg\Python'
+TF    = os.path.join(ROOT, 'time-frequency')
+ep    = mne.read_epochs(os.path.join(TF, 'sub-02_stimulus_tf_epo.fif'))   
+
+# load the cluster data, and keep only the significant clusters
+clust       = np.load(os.path.join(PERM_DATA, "clust.npy"), allow_pickle = True)
+clust_p_val = np.load(os.path.join(PERM_DATA, "clust_p_val.npy"))
+f_obs_plot  = np.zeros_like(f_obs)
+for c, p_val in zip(clust, clust_p_val):
+    if p_val <= 0.05:
+        f_obs_plot[tuple(c)] = f_obs[tuple(c)]
+
+# read channels, select time window of interest and create all True mask
+channels = ep.info["ch_names"][:64]
+twoi     = f_obs_plot[:,:6,256:410]
+excl     = np.full(64, True)
+
+# for each electrode, check whether at least 1 datapoint belongs to sign. cluster
+for i in range(len(twoi)):
+   if np.all(twoi[i,:,:] == 0):
+       print("Removed: {0:s}".format(channels[i]))
+       excl[i] = False
+       
+# keep only electrodes for which we have significant cluster points
+print("{0:.2f}% of the electrodes ignored".format(100-(sum(excl)/len(excl)*100)))
+f_obs = f_obs[excl,:,:]
+        
 # 64: electrodes, 15: frequencies, 768: time points
 # we average over electrodes to retain the frequency and time information
 f_obs_mean = np.mean(f_obs, axis = 0)
@@ -158,30 +194,23 @@ ax.set_yticklabels(ticks_str)
 
 
 # set the x-axis parameters: every 50 ms a label is placed
-ax.set_xticks(np.arange(-.2, .35, .1))
-ax.set_xticklabels([str(int(label)) for label in np.arange(-200, 350, 100)])
+ax.set_xticks(np.arange(0, .751, .25))
+ax.set_xticklabels([str(int(label)) for label in np.arange(0, 751, 250)])
 
 # set the general title, and the titles of the x-axis and the y-axis
 plt.xlabel('Time after stimulus (ms)')
 plt.ylabel('Frequency (Hz)')
-plt.title("Repetition 1 vs. 8: permutation test TFR\nResponse-locked alpha (p = 0.02)")
+plt.title("Block 1 vs. 8: permutation test TFR\nOnly significant electrodes")
 
 #%%
 
 """
-Get the colorbar for this plot, note that this involves read
+Create a colorbar
 """
 
-# load the cluster data, and keep only the significant clusters
-clust       = np.load(os.path.join(PERM_DATA, "clust.npy"), allow_pickle = True)
-clust_p_val = np.load(os.path.join(PERM_DATA, "clust_p_val.npy"))
-f_obs_plot  = np.zeros_like(f_obs)
-for c, p_val in zip(clust, clust_p_val):
-    if p_val <= 0.05:
-        f_obs_plot[tuple(c)] = f_obs[tuple(c)]
-        
 # take the average (excluding NaNs) of the significant data
-f_obs_plot_mean = np.nanmean(f_obs_plot, axis = 0)
+# Note: we only take into account the significant electrodes
+f_obs_plot_mean = np.nanmean(f_obs_plot[excl,:,:], axis = 0)
 
 # create a 2D raster of the significant data (no plot) to use for the colorbar
 im = ax.imshow(f_obs_plot_mean,
@@ -200,6 +229,27 @@ cbar = fig.colorbar(im, ax = ax)
 
 # set some colorbar parameters, such as the title, ticks and tick labels
 cbar.ax.set_title("F-statistic", 
-                  fontdict = {"fontsize": 25})
+                  fontdict = {"fontsize": 12})
 cbar.ax.get_yaxis().set_ticks(np.arange(0, np.round(np.max(f_obs_plot_mean), 1) + 0.05, 2))
-cbar.ax.tick_params(labelsize = 25)
+cbar.ax.tick_params(labelsize = 12)
+
+#%%
+
+# big fix: make sure that the 0 is shown on the x-axis of the final plot 
+ax.set_xbound(0, .75)
+
+#%%
+
+# define the Figure dir + set the size of the image
+FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
+fig.set_size_inches(6, 4)
+
+# play around until the figure is satisfactory
+plt.subplots_adjust(top=0.89, bottom=0.15, left=0.13, right=0.992, hspace=0.1,
+                    wspace=0.1)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure S2 D.tiff"), dpi = 300)
+plt.savefig(fname = os.path.join(FIG, "Figure S2 D.pdf"), dpi = 300)
+
+plt.close("all")
