@@ -27,8 +27,6 @@ ROOT = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\f
 sns.set_style("ticks")
 sns.set_context("paper")
 
-#%%
-
 rcParams['font.family']     = 'Times New Roman'
 rcParams['axes.titlesize']  = 6
 rcParams['axes.labelsize']  = 5

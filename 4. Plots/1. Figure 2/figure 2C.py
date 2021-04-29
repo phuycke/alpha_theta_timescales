@@ -25,8 +25,13 @@ ROOT = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\f
 
 # seaborn param
 sns.set_style("ticks")
-sns.set_context("paper", font_scale = 2.5)
-rcParams['font.family'] = 'Times New Roman'
+sns.set_context("paper")
+
+rcParams['font.family']     = 'Times New Roman'
+rcParams['axes.titlesize']  = 6
+rcParams['axes.labelsize']  = 5
+rcParams['xtick.labelsize'] = 5
+rcParams['ytick.labelsize'] = 5
 
 #%%
 
@@ -46,6 +51,10 @@ df.columns = ['Reaction time (ms)', 'RT_log', 'Accuracy', 'Accuracy_int',
               'Subject nr', 'Repetitions_overall', 'Repetition count', 
               'Block_overall', 'Block number', 'Condition', 'Trial_overall', 
               'Trial_block', 'Response', 'Stimulus_ID']
+
+# change type of relevant variables
+df = df.astype({'Block number':np.int32, 
+                'Reaction time (ms)':np.float32})
 
 #%%
 
@@ -72,6 +81,25 @@ g = sns.catplot(x       = "Block number",
 # plot parameters
 plt.ylim(450, 625)
 plt.yticks(np.arange(500, 601, 100))
-(g.set_xticklabels(np.arange(1, 9))
-  .set_ylabels("RT (ms)")
-  .set_yticklabels(["{0:d}".format(i) for i in np.arange(500, 601, 100)]))
+plt.xticks(np.arange(0, 8))
+plt.ylabel("RT (in ms)")
+plt.xlabel("Block number")
+plt.title("Slow timescale")
+
+
+#%%
+
+# define the Figure dir + set the size of the image
+FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
+fig = plt.gcf()
+fig.set_size_inches(3, 2)
+
+# play around until the figure is satisfactory (difficult with high DPI)
+plt.subplots_adjust(top=0.911, bottom=0.159, left=0.14, right=0.971, 
+                    hspace=0.2, wspace=0.2)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure 2C.tiff"), dpi = 800)
+plt.savefig(fname = os.path.join(FIG, "Figure 2C.pdf"), dpi = 800)
+
+plt.close("all")
