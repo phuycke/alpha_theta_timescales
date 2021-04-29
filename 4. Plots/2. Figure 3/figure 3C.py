@@ -128,7 +128,7 @@ plt.subplots_adjust(top=0.85, bottom=0.15, left=0.185, right=0.95, hspace=0.075,
 
 # save as tiff and pdf
 plt.savefig(fname = os.path.join(FIG, "Figure 3C.tiff"), dpi = 800)
-plt.savefig(fname = os.path.join(FIG, "Figure 3C.tiff"), dpi = 800)
+plt.savefig(fname = os.path.join(FIG, "Figure 3C.pdf"), dpi = 800)
 
 plt.close("all")
 

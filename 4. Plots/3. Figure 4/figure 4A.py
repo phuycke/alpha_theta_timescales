@@ -21,10 +21,10 @@ from matplotlib import rcParams
 #%%
 
 rcParams['font.family']     = 'Times New Roman'
-rcParams['axes.titlesize']  = 35
-rcParams['axes.labelsize']  = 30
-rcParams['xtick.labelsize'] = 30
-rcParams['ytick.labelsize'] = 30
+rcParams['axes.titlesize']  = 12
+rcParams['axes.labelsize']  = 12
+rcParams['xtick.labelsize'] = 12
+rcParams['ytick.labelsize'] = 12
 
 #%%
 
@@ -208,3 +208,20 @@ cbar.ax.tick_params(labelsize = 25)
 
 # big fix: make sure that the 0 is shown on the x-axis of the final plot 
 ax.set_xbound(0, .75)
+
+#%%
+
+# define the Figure dir + set the size of the image
+FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
+fig.set_size_inches(6, 4)
+
+# play around until the figure is satisfactory
+plt.subplots_adjust(top=0.89, bottom=0.15, left=0.13, right=0.992, hspace=0.1,
+                    wspace=0.1)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure 3A.tiff"), dpi = 300)
+plt.savefig(fname = os.path.join(FIG, "Figure 3A.tiff"), dpi = 300)
+
+plt.close("all")
+

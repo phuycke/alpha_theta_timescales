@@ -33,7 +33,7 @@ TMIN, TMAX  = 0, .4
 VMIN, VMAX  = -.85, .85
 
 rcParams['font.family'] = 'Times New Roman'
-rcParams['font.size']   = 30
+rcParams['font.size']   = 20
 
 # these are the subjects that had all 512 epochs recorded and stored safely
 full_epochs = ["sub-02", "sub-03", "sub-04", "sub-05", "sub-06", "sub-08",
@@ -146,6 +146,7 @@ avg_tfr.plot_topomap(tmin     = TMIN,
                      fmax     = FMAX,
                      vmin     = VMIN, 
                      vmax     = VMAX,
+                     unit     = " ",
                      ch_type  = "eeg", 
                      cmap     = "RdBu_r",
                      outlines = "head", 
@@ -154,14 +155,21 @@ avg_tfr.plot_topomap(tmin     = TMIN,
                      cbar_fmt = fmt_float,
                      sensors  = "ko",
                      axes     = ax,
-                     title    = None)
+                     title    = r"$\theta$ topography")
+
+# manually add label for color bar
+plt.text(-1.8, .89, "dB")
 
 # set the Figure dir + set the size of the image
 FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
 fig.set_size_inches(6, 4)
 
+# adjust the plot to fit the window
+plt.subplots_adjust(top=0.85, bottom=0.11, left=0.11, right=0.9, hspace=0.2, 
+                    wspace=0.2)
+
 # save as tiff and pdf
 plt.savefig(fname = os.path.join(FIG, "Figure 4B.tiff"), dpi = 300)
-plt.savefig(fname = os.path.join(FIG, "Figure 4B.tiff"), dpi = 300)
+plt.savefig(fname = os.path.join(FIG, "Figure 4B.pdf"), dpi = 300)
 
 plt.close("all")

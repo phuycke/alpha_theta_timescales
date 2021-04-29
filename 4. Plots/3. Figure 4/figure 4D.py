@@ -30,10 +30,10 @@ sns.set_context("paper")
 #%%
 
 rcParams['font.family']     = 'Times New Roman'
-rcParams['axes.titlesize']  = 35
-rcParams['axes.labelsize']  = 30
-rcParams['xtick.labelsize'] = 30
-rcParams['ytick.labelsize'] = 30
+rcParams['axes.titlesize']  = 6
+rcParams['axes.labelsize']  = 5
+rcParams['xtick.labelsize'] = 5
+rcParams['ytick.labelsize'] = 5
 
 #%%
 
@@ -45,7 +45,7 @@ seaborn plotting code
 """
 
 # read the data
-df = pd.read_csv(os.path.join(ROOT, "theta_alpha_beta_1elec_behavioural.csv"))
+df = pd.read_csv(os.path.join(ROOT, "theta_alpha_beta_behavioural.csv"))
 
 # change the column names to their appropriate label
 df.columns = ['Reaction time (ms)', 'RT_log', 'Accuracy', 'Accuracy_int', 
@@ -68,10 +68,10 @@ x_title, y_title = "Block number", "Theta power"
 #%%
     
 # make a subplot with 1 row and 2 columns
-f, ax_list = plt.subplots(1, 2,
-                          sharex  = True, 
-                          sharey  = True,
-                          squeeze = True)
+fig, ax_list = plt.subplots(1, 2,
+                            sharex  = True, 
+                            sharey  = True,
+                            squeeze = True)
 
 # Novel condition
 g = sns.regplot(x           = x_title, 
@@ -81,7 +81,8 @@ g = sns.regplot(x           = x_title,
                 x_ci        = "ci", 
                 ci          = 95,
                 n_boot      = 5000,
-                line_kws    = {'lw': 5},
+                scatter_kws = {"s":15}, 
+                line_kws    = {'lw': .75},
                 color       = "darkgrey",
                 ax          = ax_list[0])
 
@@ -93,14 +94,15 @@ g = sns.regplot(x           = x_title,
                 x_ci        = "ci", 
                 ci          = 95,
                 n_boot      = 5000,
-                line_kws    = {'lw': 5},
+                scatter_kws = {"s":15}, 
+                line_kws    = {'lw': .75},
                 color       = "black",
                 ax          = ax_list[1])
 
 # figure parameters (left figure)
 ax_list[0].set_title(r"Novel condition")   
-ax_list[0].set_ylim([-.15, .15])  
-ax_list[0].set_yticks(np.arange(-.15, .16, .05))   
+ax_list[0].set_ylim([-.1, .1])  
+ax_list[0].set_yticks(np.arange(-.1, .11, .1))   
 ax_list[0].set_xticks(np.arange(1, 9))
 ax_list[0].set_xlim(0.5, 8.5)
 ax_list[0].set_xlabel(r"Block number")
@@ -112,4 +114,21 @@ ax_list[1].set_xlabel(r"Block number")
 ax_list[1].set_ylabel(r"$\theta$ power")
 
 # general title
-f.suptitle(r"$\theta$ power ~ slow timescale (only Fz)", fontsize = 35) 
+fig.suptitle(r"$\theta$ power ~ slow timescale", fontsize = 8) 
+
+#%%
+
+# define the Figure dir + set the size of the image
+FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
+fig.set_size_inches(3, 2)
+
+# play around until the figure is satisfactory (difficult with high DPI)
+plt.subplots_adjust(top=0.85, bottom=0.15, left=0.185, right=0.95, hspace=0.075,
+                    wspace=0.2)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure 4D.tiff"), dpi = 800)
+plt.savefig(fname = os.path.join(FIG, "Figure 4D.pdf"), dpi = 800)
+
+plt.close("all")
+
