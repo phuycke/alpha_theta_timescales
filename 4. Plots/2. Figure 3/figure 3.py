@@ -21,7 +21,7 @@ from matplotlib import ticker, rcParams, gridspec
 
 #%%
 
-TEXT_SIZE = 20
+TEXT_SIZE = 15
 
 rcParams['font.family']     = 'Times New Roman'
 rcParams['axes.titlesize']  = TEXT_SIZE
@@ -32,22 +32,22 @@ rcParams['ytick.labelsize'] = TEXT_SIZE
 #%%
 
 # create grid for plots
-fig = plt.figure(figsize=(6, 4)) 
-gs  = gridspec.GridSpec(2, 4)
+fig = plt.figure(figsize=(10, 9)) 
+gs  = gridspec.GridSpec(2, 13)
 
 # TFR plot
-fig_3a   = plt.subplot(gs[0, :3])
+fig_3a   = plt.subplot(gs[0, :8])
 
 # topoplot
-fig_3b   = plt.subplot(gs[0, -1:])
+fig_3b   = plt.subplot(gs[0, 8:])
 
 # alpha on the fast timescale
-fig_3c_l = plt.subplot(gs[1, 0])  # novel condition
-fig_3c_r = plt.subplot(gs[1, 1])  # repeating condition
-
+fig_3c_l = plt.subplot(gs[1, 0:3])       # novel condition
+fig_3c_r = plt.subplot(gs[1, 3:6])       # repeating condition
+ 
 # alpha on the slow timescale
-fig_3d_l = plt.subplot(gs[1, 2])  # novel condition
-fig_3d_r = plt.subplot(gs[1, 3])  # repeating condition
+fig_3d_l = plt.subplot(gs[1, 7:10])      # novel condition
+fig_3d_r = plt.subplot(gs[1, 10:13])     # repeating condition
 
 #%%
 
@@ -328,14 +328,14 @@ fig_3c_l.set_xlabel(r"Stimulus number")
 fig_3c_l.set_ylabel(r"$\alpha$ power")
 
 # figure parameters (right figure)
+fig_3c_r.set_xlim(0.5, 8.5)
+fig_3c_r.set_xticks(np.arange(1, 9))
 fig_3c_r.set_ylim([-.5, -.1])  
 fig_3c_r.set_yticks(np.arange(-.5, -.09, .1))   
 fig_3c_r.set_yticklabels([])   
-fig_3c_r.set_xlim(0.5, 8.5)
-fig_3c_r.set_xticks(np.arange(1, 9))
 fig_3c_r.set_title(r"Repeating condition", size = TEXT_SIZE)   
 fig_3c_r.set_xlabel(r"Stimulus number")
-fig_3c_r.set_ylabel(r"$\alpha$ power")
+fig_3c_r.set_ylabel(" ")
 
 #%%
 
@@ -381,15 +381,15 @@ fig_3d_l.set_xlim(0.5, 8.5)
 fig_3d_l.set_xlabel(r"Block number")
 fig_3d_l.set_ylabel(r"$\alpha$ power")
 
-# figure parameters (right figure)
-fig_3d_r.set_ylim([-.5, -.1])  
-fig_3d_r.set_yticks(np.arange(-.5, -.09, .1))   
-fig_3d_r.set_yticklabels([])   
+# figure parameters (right figure) 
 fig_3d_r.set_xlim(0.5, 8.5)
 fig_3d_r.set_xticks(np.arange(1, 9))
+fig_3d_r.set_ylim([-.5, -.1])  
+fig_3d_r.set_yticks(np.arange(-.5, -.09, .1))   
+fig_3d_r.set_yticklabels([]) 
 fig_3d_r.set_title(r"Repeating condition", size = TEXT_SIZE)   
 fig_3d_r.set_xlabel(r"Block number")
-fig_3d_r.set_ylabel(r"$\alpha$ power")
+fig_3d_r.set_ylabel(" ")
 
 #%%
 
@@ -401,21 +401,26 @@ Save figure
 FIG = r"C:\Users\pieter\OneDrive - UGent\Projects\2019\overtraining - PILOT 3\figures\Publish\Correct DPI plots"
 
 # play around until the figure is satisfactory (difficult with high DPI)
-plt.subplots_adjust(top=0.924, bottom=0.087, left=0.062, right=0.967, 
-                    hspace=0.323, wspace=0.305)
+plt.subplots_adjust(top=0.932, bottom=0.077, left=0.097, right=0.938, 
+                    hspace=0.5, wspace=0.35)
 
-# TODO: manual additions
-plt.text(-1.5, 4.6, "dB")     # Figure 3B colorbar scale
-# alpha ~ fast timescale title
-# alpha ~ slow timescale title
+# letters indicating the panels
+plt.text(-245, 5, "A", size = TEXT_SIZE+5)    
+plt.text(-85, 5, "B", size = TEXT_SIZE+5)    
+plt.text(-245, -1, "C", size = TEXT_SIZE+5)    
+plt.text(-115, -1, "D", size = TEXT_SIZE+5)    
 
-# TODO: fix plot for 300 DPI
+# dB label for panel B
+plt.text(-1.5, 4.6, "dB", size = TEXT_SIZE)    
 
-# =============================================================================
-# # save as tiff and pdf
-# plt.savefig(fname = os.path.join(FIG, "Figure 3.tiff"), dpi = 300)
-# plt.savefig(fname = os.path.join(FIG, "Figure 3.pdf"), dpi = 300)
-# 
-# plt.close("all")
-# 
-# =============================================================================
+# titles for panels C and D
+plt.text(-200, -1.15, r"$\alpha$ power ~ fast timescale", size = TEXT_SIZE)
+plt.text(-75, -1.15, r"$\alpha$ power ~ slow timescale", size = TEXT_SIZE)
+
+# save as tiff and pdf
+plt.savefig(fname = os.path.join(FIG, "Figure 3.tiff"), dpi = 300)
+plt.savefig(fname = os.path.join(FIG, "Figure 3.pdf"), dpi = 300)
+
+plt.close("all")
+
+
