@@ -68,8 +68,8 @@ step.
 x_title, y_title, hue = "Block number", "Reaction time (ms)", "Condition"
         
 # actual plot
-g = sns.catplot(x       = "Block number", 
-                y       = "Reaction time (ms)", 
+g = sns.catplot(x       = x_title, 
+                y       = y_title, 
                 hue     = hue,
                 data    = df, 
                 kind    = "point",
