@@ -83,7 +83,7 @@ fig_2a.set_ylim(500, 700)
 fig_2a.set_yticks(np.arange(500, 701, 100))
 fig_2a.set_xticks(np.arange(0, 8))
 fig_2a.set_ylabel("RT (in ms)")
-fig_2a.set_xlabel("Stimulus number")
+fig_2a.set_xlabel("Stimulus repetitions")
 fig_2a.set_title("Fast timescale")
 
 #%%
@@ -130,7 +130,7 @@ fig_2b.set_ylim(0, 50)
 fig_2b.set_yticks(np.arange(0, 51, 25))
 fig_2b.set_xticks(np.arange(0, 8))
 fig_2b.set_ylabel("Error (in %)")
-fig_2b.set_xlabel("Stimulus number")
+fig_2b.set_xlabel("Stimulus repetitions")
 fig_2b.set_title("Fast timescale")
 
 #%%
