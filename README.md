@@ -5,33 +5,24 @@
 [![DOI paper](https://img.shields.io/badge/Paper-https%3A%2F%2Fdoi.org%2F10.1111%2Fejn.15320-blue)](https://doi.org/10.1111/ejn.15320)
 [![DOI data](https://img.shields.io/badge/Data-%20%20https%3A%2F%2Fdoi.org%2F10.5281%2Fzenodo.4659714-blue)](https://doi.org/10.5281/zenodo.4659714)
 
-## Overview
+## Significance
 
-This GitHub repository contains the code used for the analysis and plotting done in the paper titled "Theta and alpha power across fast and slow timescales in cognitive control" by Pieter Huycke, Pieter Verbeke, C. Nico Boehler and Tom Verguts. A preprint of this article is available on [BioRxiv.](https://doi.org/10.1101/2020.08.21.259341) The code available in this repository relies on the data collected for our study. This data is also open access, and can be found in this [Open Science Framework repository](https://osf.io/2q5eh/) when the article is published. 
+This GitHub repository stores code and processed data files used for the paper published in [European Journal of Neuroscience](https://onlinelibrary.wiley.com/doi/epdf/10.1111/ejn.15320). The entire dataset (EEG + behavioral data) can be downloaded from [Zenodo](https://zenodo.org/record/4659714). 
 
-## Organization
+## Folders
 
-The scripts are organized following the order defined in [the paper](https://doi.org/10.1101/2020.08.21.259341).
-
-- Software environment
-    * A list of all the softwares used in the Anaconda environment, and their version at the moment of submission
-- Experiment
-    * Code
-        - The experiment code itself. Note that ```main (only sub-01).py``` is a version that was used for the first subject. This version was too long, and hence we used a shorter version for the other 29 subjects (```main.py```).
-    * Stimuli
-        - The stimuli used in this experiment. Same stimuli as used in [Ruge and Wolfensteller (2010)](https://doi.org/10.1093/cercor/bhp228). 
-- Data preparation
-    * Behavioral
-        - Behavioral data rejection (```clean.py```)
-        - Definition of our descriptive statistics (```descriptives.py```)
-    * EEG
-        - Custom code written to preprocess our EEG data (```eeg_helper.py```)
-        - The preprocessing pipeline as described in 'Data Recording and Initial Processing' (```initial_processing.py```)
-        - List of subject-specific rejected channels and rejected ICA components (```set_cleaning_parameters.py```)
-- Analysis
-    * Ordered list of the analyses associated with the results described in the paper. The scripts are ordered so that their order corresponds with the order of the results described in the manuscript. In-script comments refer to the specific analysis done
-- Plots
-    * Folders describe the specific figure, file names describe what specific part of the plot is created
+0. Software environment
+    * Conda environment files (MNE, psychopy, analysis)
+1. Experiment
+    * Code: experiment code (PsychoPy3)
+    * Stimuli: adopted with permission from [Ruge and Wolfensteller (2010)](https://doi.org/10.1093/cercor/bhp228). 
+2. Data preparation
+    * Behavioral: cleaning behavioral data + descriptive stats
+    * EEG: custom EEG analysis pipeline + data cleaning
+3. Analysis
+    * Plotting (Python 3) + statistics (R) scripts. 
+4. Plots
+    * Scripts to recreate plots shown in the paper
 
 ## Programming environment   
 
