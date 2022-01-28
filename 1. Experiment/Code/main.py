@@ -39,10 +39,10 @@ import numpy as np
 from psychopy            import clock, core, event, parallel, visual
 
 # define the root folder according to the BIDS structure
-root     = r'C:\Users\pieter\Downloads\GitHub\Pieter_H\2018-2019\projects\ruge\extensive training - experiment\overtraining'
+root     = r'D:\EEG_DEMO'
 
 # cd to correct dir to import randomizationHelper
-code_dir = root + r'\code\experiment'
+code_dir = root + r'\code\Code'
 os.chdir(code_dir)
 
 from randomizationHelper import randomHelper as helper
@@ -473,10 +473,6 @@ count_down   = visual.TextStim(win,
 fixation     = visual.TextStim(win, 
                                text   = "OK", 
                                height = 0.1)
-not_answered = visual.ImageStim(win, 
-                               image = stim_dir + '\\not_answered.jpg')
-answered     = visual.ImageStim(win, 
-                               image = stim_dir + '\\answered.jpg')
 anticipation = visual.TextStim(win, 
                                text   = "OK", 
                                color  = main_font)
@@ -746,7 +742,6 @@ for block in range(len(trial)):
                                       image = stim_name)
         
         # actually draw the stimuli
-        not_answered.draw()
         stimulus.draw()
         win.flip()
         
@@ -790,7 +785,6 @@ for block in range(len(trial)):
         else:
                    
             # update the rectange color
-            answered.draw()
             stimulus.draw()
             win.flip()
             

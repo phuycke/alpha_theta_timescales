@@ -1,0 +1,12 @@
+name: analysis
+channels:
+  - defaults
+dependencies:
+  - python==3.9.6
+  - spyder=5.1.5
+  - numpy
+  - seaborn
+  - matplotlib
+  - scipy
+  - scikit-learn
+prefix: C:\Users\pieter\Anaconda3\envsanalysis

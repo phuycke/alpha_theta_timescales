@@ -1,0 +1,29 @@
+name: mne
+channels:
+  - defaults
+dependencies:
+  - scipy
+  - scikit-learn
+  - traits
+  - imageio
+  - numba
+  - python[version='>=3.8']
+  - psutil
+  - tqdm
+  - jupyter
+  - pandas
+  - traitsui
+  - pip
+  - matplotlib
+  - numexpr
+  - statsmodels
+  - xlrd
+  - pyface
+  - h5py
+  - spyder-kernels=1.9.4
+  - joblib
+  - pillow
+  - numpy
+  - spyder=4.1.5
+  - seaborn
+prefix: C:\Users\pieter\Anaconda3\envs\mne

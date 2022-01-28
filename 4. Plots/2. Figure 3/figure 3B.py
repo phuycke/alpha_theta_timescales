@@ -28,9 +28,9 @@ line with convention in the C language.
 # Determines which part of the analysis to run + some plotting parameters
 STIM_LOCKED = True
 COMPUTE_TFR = False
-BAND        = [(8, 12, "Alpha")]
-TMIN, TMAX  = .65, .9  
-VMIN, VMAX  = 0.5, 4.5
+BAND        = [(4, 8, "Theta")]
+TMIN, TMAX  = .25, .4  
+VMIN, VMAX  = -, 4.5
 
 rcParams['font.family'] = 'Times New Roman'
 rcParams['font.size']   = 20

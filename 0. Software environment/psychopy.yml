@@ -1,0 +1,9 @@
+name: psychopy
+channels:
+  - defaults
+dependencies:
+  - psychopy
+  - python=3.6
+  - pip
+  - spyder
+prefix: C:\Users\pieter\Anaconda3\envs\psychopy
